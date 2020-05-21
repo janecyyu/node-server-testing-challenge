@@ -17,4 +17,12 @@ router.post("/", (req, res) => {
     .catch((err) => res.send(err));
 });
 
+router.delete("/:id", (req, res) => {
+  Users.remove(req.params.id)
+    .then((users) => {
+      res.status(200).json({ message: "delete successfully" });
+    })
+    .catch((err) => res.send(err));
+});
+
 module.exports = router;
