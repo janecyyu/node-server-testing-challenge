@@ -14,6 +14,7 @@ describe("server", () => {
           .then((response) => {
             //from jest
             expect(response.status).toBe(200);
+            expect(response.status).toBeTruthy();
           })
       );
     });
@@ -32,7 +33,10 @@ describe("server", () => {
       return supertest(server)
         .get("/users")
         .then((res) => {
+          const testItem = { id: 1, name: "sam" };
+
           expect(Array.isArray(res.body)).toBe(true);
+          expect(res.body[0]).toEqual(testItem);
         });
     });
   });
