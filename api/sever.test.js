@@ -1,5 +1,7 @@
 const supertest = require("supertest");
 const server = require("./server");
+const model = require("../usersRouter/model");
+const db = require("../data/dbConfig");
 
 describe("server", () => {
   it("can run", () => {
@@ -28,16 +30,39 @@ describe("server", () => {
         });
     });
   });
+
   describe("GET /users", () => {
     it("should return an array", () => {
       return supertest(server)
         .get("/users")
         .then((res) => {
-          const testItem = { id: 1, name: "sam" };
-
           expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
+    it("should return correct first user", () => {
+      return supertest(server)
+        .get("/users")
+        .then((res) => {
+          const testItem = { id: 1, name: "sam" };
           expect(res.body[0]).toEqual(testItem);
         });
+    });
+  });
+
+  describe("insert()", () => {
+    it("should insert the provided users into the db", async () => {
+      await model.add({ name: "Sheldon" });
+
+      // read data from the table
+      const users = await db("users");
+      let amount = users.length;
+      expect(users).toHaveLength(amount);
+    });
+    it("should return true when add new user", async () => {
+      await model.add({ name: "Mary" });
+      // read data from the table
+      const users = await db("users");
+      expect(users[users.length - 1]).toBeTruthy();
     });
   });
 });
