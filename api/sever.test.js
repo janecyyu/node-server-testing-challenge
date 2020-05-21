@@ -49,8 +49,8 @@ describe("server", () => {
     });
   });
 
-  describe("insert()", () => {
-    it("should insert the provided users into the db", async () => {
+  describe("POST /users", () => {
+    it("should correct length of user list", async () => {
       await model.add({ name: "Sheldon" });
 
       // read data from the table
@@ -63,6 +63,26 @@ describe("server", () => {
       // read data from the table
       const users = await db("users");
       expect(users[users.length - 1]).toBeTruthy();
+    });
+  });
+
+  describe("DELETE /users/:id", () => {
+    it("should return correct length after remove users", async () => {
+      const users = db("users");
+      let amount = users.length;
+      await model.remove(amount - 1);
+
+      const data = await db("users");
+      newAmount = data.length;
+      expect(data).toHaveLength(newAmount);
+    });
+    it("should return undefine on the deleted id", async () => {
+      const users = db("users");
+      let amount = users.length;
+      await model.remove(amount - 1);
+      // read data from the table
+      const newUsers = await db("users");
+      expect(newUsers[newUsers.length]).toBeUndefined();
     });
   });
 });
