@@ -50,6 +50,16 @@ describe("server", () => {
   });
 
   describe("POST /users", () => {
+    it("return 201 created", function (done) {
+      return supertest(server)
+        .post("/users")
+        .send({ name: "john" })
+        .expect(201)
+        .end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
     it("should correct length of user list", async () => {
       await model.add({ name: "Sheldon" });
 
